@@ -12,14 +12,18 @@ import { CreateUserDTO } from '../dtos/user/CreateUser.dto';
 import { ListUserDTO } from '../dtos/user/ListUser.dto';
 import { UserService } from '../services/user.service';
 
+
 @Controller('/users')
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Post()
   async createUser(@Body() dadosDoUser: CreateUserDTO) {
-    const userCriado = await this.userService.createUser(dadosDoUser);
+    const userCriado: any = await this.userService.createUser(dadosDoUser);
 
+    if(userCriado === null){
+      throw new Error("erro");
+    }
     return {
       user: new ListUserDTO(userCriado.id, userCriado.access_name),
       messagem: 'usuário criado com sucesso',
