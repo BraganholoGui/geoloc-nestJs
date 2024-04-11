@@ -6,23 +6,23 @@ import {
   DeleteDateColumn,
   PrimaryGeneratedColumn,
   OneToOne,
-  JoinColumn
 } from 'typeorm';
 import { PersonEntity } from './person.entity';
 
-@Entity({ name: 'user' })
-export class UserEntity {
+@Entity({ name: 'contact' })
+export class ContactEntity {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column({ name: 'access_name', length: 100, nullable: false })
-  access_name: string;
+  @Column({ name: 'email', length: 70, nullable: false })
+  email: string;
 
-  @Column({ name: 'senha', length: 255, nullable: false })
-  senha: string;
+  @Column({ name: 'phone', length: 70})
+  phone: string;
 
-  @OneToOne(() => PersonEntity, (person) => person.user)
-  @JoinColumn()
+  @OneToOne(() => PersonEntity, (person) => person.contact, {
+    cascade: true,
+  })
   person: PersonEntity;
 
   @CreateDateColumn({ name: 'created_at' })
