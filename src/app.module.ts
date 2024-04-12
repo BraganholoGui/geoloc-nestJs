@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { UserModule } from './app/modules/user.module';
 import { MysqlConfigService } from './config/mysql.config.service';
+import { CorsMiddleware } from './cors.middleware';
 
 @Module({
   imports: [
@@ -17,4 +18,8 @@ import { MysqlConfigService } from './config/mysql.config.service';
     }),
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CorsMiddleware).forRoutes('*');
+  }
+}
