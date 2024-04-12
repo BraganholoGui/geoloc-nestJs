@@ -19,15 +19,20 @@ export class UserController {
 
   @Post()
   async createUser(@Body() dadosDoUser: CreateUserDTO) {
-    const userCriado: any = await this.userService.createUser(dadosDoUser);
+    try{
+      const userCriado: any = await this.userService.createUser(dadosDoUser);
+  
+      if(userCriado === null){
+        throw new Error("erro");
+      }
+      return {
+        user: new ListUserDTO(userCriado.id, userCriado.access_name),
+        messagem: 'usuário criado com sucesso',
+      };
 
-    if(userCriado === null){
-      throw new Error("erro");
+    }catch(e){
+      console.log('eee', e)
     }
-    return {
-      user: new ListUserDTO(userCriado.id, userCriado.access_name),
-      messagem: 'usuário criado com sucesso',
-    };
   }
 
   @Get()

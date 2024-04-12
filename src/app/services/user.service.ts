@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException  } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ListUserDTO } from '../dtos/user/ListUser.dto';
 import { UserEntity } from '../entities/user.entity';
@@ -20,24 +20,37 @@ export class UserService {
   ) {}
 
   async createUser(dadosDoUser: CreateUserDTO) {
-    const usuarioEntity = new UserEntity();
-    const contactEntity = new ContactEntity();
-    const personEntity = new PersonEntity();
+    try{
+      console.log(dadosDoUser)
+      const { person, contact } = dadosDoUser;
+      console.log(person)
+      console.log('contactcontact', contact)
 
-    contactEntity.email = dadosDoUser.contact.email;
-    contactEntity.phone = dadosDoUser.contact.phone;
-    this.contactRepository.save(contactEntity);
-   
-    personEntity.name = dadosDoUser.person.name;
-    personEntity.contact = contactEntity;
-    this.personRepository.save(personEntity);
-
-    console.log(dadosDoUser)
-    usuarioEntity.senha = dadosDoUser.senha;
-    usuarioEntity.access_name = dadosDoUser.access_name;
-    usuarioEntity.person = personEntity;
-
-    return this.userRepository.save(usuarioEntity);
+      if (!person || !contact) {
+        throw new BadRequestException('Username and profile are required');
+      }
+      return
+      const usuarioEntity = new UserEntity();
+      const contactEntity = new ContactEntity();
+      const personEntity = new PersonEntity();
+  
+      contactEntity.email = dadosDoUser.contact.email;
+      contactEntity.phone = dadosDoUser.contact.phone;
+      this.contactRepository.save(contactEntity);
+     
+      personEntity.name = dadosDoUser.person.name;
+      personEntity.contact = contactEntity;
+      this.personRepository.save(personEntity);
+  
+      console.log(dadosDoUser)
+      usuarioEntity.senha = dadosDoUser.senha;
+      usuarioEntity.access_name = dadosDoUser.access_name;
+      usuarioEntity.person = personEntity;
+  
+      // return this.userRepository.save(usuarioEntity);
+    }catch(e){
+      console.log('eee', e)
+    }
   }
 
   async listUsers() {

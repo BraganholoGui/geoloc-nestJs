@@ -1,22 +1,23 @@
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, MinLength, ValidateNested } from 'class-validator';
 import { EmailEhUnico } from '../../validacao/email-eh-unico.validator';
 import { PersonEntity } from 'src/app/entities/person.entity';
 import { ContactEntity } from 'src/app/entities/contact.entity';
+import {CreateContactDTO} from '../contact/CreateContact.dto'
+import { PersonCreateDTO } from '../person/CreatePerson.dto';
+import { Type } from 'class-transformer';
 
 export class CreateUserDTO {
   @IsNotEmpty({ message: 'O nome não pode ser vazio' })
   access_name: string;
 
-  // @IsEmail(undefined, { message: 'O e-mail informado é inválido' })
-  // @EmailEhUnico({ message: 'Já existe um usuário com este e-mail' })
-  // email: string;
-
   @MinLength(6, { message: 'A senha precisa ter pelo menos 6 caracteres' })
   senha: string;
 
-  @IsNotEmpty({ message: 'O nome não pode ser vazio' })
-  contact: ContactEntity;
+  @ValidateNested()
+  @Type(() => CreateContactDTO)
+  contact: CreateContactDTO;
 
-  @IsNotEmpty({ message: 'O nome não pode ser vazio' })
-  person: PersonEntity;
+  @ValidateNested()
+  @Type(() => PersonCreateDTO)
+  person: PersonCreateDTO;
 }
